@@ -9,10 +9,10 @@ import { CLEAR_TODOS } from '../actions';
   styleUrls: ['./todo-dashboard.component.css']
 })
 export class TodoDashboardComponent {
-  @select() todos; 
-  @select() lastUpdate; 
+  @select() todos;
+  @select() lastUpdate;
   @select() itemDeletado;
-  @select() itemAdicionado
+  @select() itemAdicionado;
   
   constructor(private ngRedux: NgRedux<IAppState>) {
   }
