@@ -15,26 +15,20 @@ export const INITIAL_STATE: IAppState = {
   itemAdicionado: []
 }
 
-export function rootReducer(state: IAppState, action): IAppState {
-  console.log('state: ', state);
-  console.log('Action: ', action);
-  
+ function AddTodo(state, action) {
+  var newTodo = { id: state.todos.length + 1, title: action.title };
+  console.log('newTodo: ', newTodo);
+  return tassign(state, {
+    // Instead of the push() method, we use the concat() method because the former mutates
+    // the original array, whereas the latter returns a new array. 
+    todos: state.todos.concat(newTodo),
+    lastUpdate: new Date(),
+    itemAdicionado: newTodo
+  });
+}
 
-  switch (action.type) {
-    case ADD_TODO: 
-      var newTodo = { id: state.todos.length + 1, title: action.title };
-          console.log('newTodo: ', newTodo);
-
-      return tassign(state, {
-        // Instead of the push() method, we use the concat() method because the former mutates
-        // the original array, whereas the latter returns a new array. 
-        todos: state.todos.concat(newTodo),
-        lastUpdate: new Date(),
-        itemAdicionado: newTodo
-      });
-
-    case TOGGLE_TODO: 
-      // When modifying an item in an array, we should create a new array, and copy 
+function ToggleTodo(state, action) {
+  // When modifying an item in an array, we should create a new array, and copy 
       // all other item from the source array (except the item to be modified). At the same time
       // we should create a copy of the item to be modified and apply the mutations using tassing.
 
@@ -73,24 +67,33 @@ export function rootReducer(state: IAppState, action): IAppState {
         lastUpdate: new Date()
       });
 
-    case REMOVE_TODO: 
+}
 
-    
-    var deletado = state.todos.find(t => t.id === action.id);
-   // var index = state.todos.indexOf(todo);
-
-      return tassign(state, {
-        todos: state.todos.filter(t => t.id !== action.id),
-        lastUpdate: new Date(),
-        itemDeletado: deletado
-      });
-
-    case CLEAR_TODOS: 
+function RemoveTodo(state, action) {
+  var deletado = state.todos.find(t => t.id === action.id);
+  // var index = state.todos.indexOf(todo);
      return tassign(state, {
-        todos: [],
-        lastUpdate: new Date()
-      });
-  }
+       todos: state.todos.filter(t => t.id !== action.id),
+       lastUpdate: new Date(),
+       itemDeletado: deletado
+     });
+}
 
-  return state; 
+function ClearTodo(state, action) {
+  return tassign(state, {
+    todos: [],
+    lastUpdate: new Date()
+  });
+}
+
+export function rootReducer(state: IAppState, action): IAppState {
+  console.log('state: ', state);
+  console.log('Action: ', action);
+  switch (action.type) {
+    case ADD_TODO: return AddTodo(state, action);
+    case TOGGLE_TODO: return ToggleTodo(state, action);
+    case REMOVE_TODO: return RemoveTodo(state, action);
+    case CLEAR_TODOS: return ClearTodo(state, action);
+  }
+  return state;
 }
